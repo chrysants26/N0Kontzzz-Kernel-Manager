@@ -565,37 +565,41 @@ class SystemRepository @Inject constructor(
 
     suspend fun getWakelocks(): List<WakelockInfo> {
         // 0. Use cached source if available for instant results
-        val rawList = lastSuccessfulSource?.let { source ->
-            val data = when (source) {
+        var rawList: List<WakelockInfo> = emptyList()
+        val cachedSource = lastSuccessfulSource
+        if (cachedSource != null) {
+            val data = when (cachedSource) {
                 WakelockSource.MODERN -> getWakelocksModern()
                 WakelockSource.LEGACY -> getWakelocksLegacy()
                 WakelockSource.CLASS_SYS -> getWakelocksClassSys()
             }
-            if (data.isNotEmpty()) data else {
+            if (data.isNotEmpty()) {
+                rawList = data
+            } else {
                 lastSuccessfulSource = null
-                null
             }
-        } ?: run {
+        }
+
+        if (rawList.isEmpty()) {
             // Discovery phase
             val modern = getWakelocksModern()
             if (modern.isNotEmpty()) {
                 lastSuccessfulSource = WakelockSource.MODERN
-                modern
+                rawList = modern
             } else {
                 val legacy = getWakelocksLegacy()
                 if (legacy.isNotEmpty()) {
                     lastSuccessfulSource = WakelockSource.LEGACY
-                    legacy
+                    rawList = legacy
                 } else {
                     val classSys = getWakelocksClassSys()
                     if (classSys.isNotEmpty()) {
                         lastSuccessfulSource = WakelockSource.CLASS_SYS
-                        classSys
-                    } else emptyList()
+                        rawList = classSys
+                    }
                 }
             }
         }
-
         if (rawList.isEmpty()) return emptyList()
 
         // Aggregate duplicates by name
