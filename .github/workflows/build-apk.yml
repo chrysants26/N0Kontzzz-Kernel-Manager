@@ -26,12 +26,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android Build-Tools and Platforms
+      - name: Accept Android SDK licenses
         run: |
-          sdkmanager --install "platforms;android-35" "platforms;android-34" "build-tools;35.0.0"
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Make gradlew executable
         run: chmod +x gradlew
