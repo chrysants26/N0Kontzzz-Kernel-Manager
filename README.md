@@ -116,7 +116,7 @@ One-tap governor presets across all clusters.
 ## Requirements
 
 - Kona (SM8250) device running a supported kernel:
-  `N0Kontzzz` · `N0kernel` · `FusionX` · `Lunar` · `E404R` · `perf+` · `Oxygen+` · `dead-butterflies`
+  `N0Kontzzz` · `N0kernel` · `FusionX` · `Lunar` · `E404R` · `perf+` · `Oxygen+` · `dead-butterflies` · `Kalopsia`
 - Root access via **Magisk** or **KernelSU**
 
 ---

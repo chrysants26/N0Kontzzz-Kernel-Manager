@@ -44,9 +44,10 @@ class MainViewModel @Inject constructor(
             val versionLine = rootRepo.run("cat /proc/version")
 
             if (versionLine.isNotBlank()) {
-                // E404R: string match only, no host check
+                // E404R & Kalopsia: string match only, no host check
                 if (versionLine.contains("4.19.404R", ignoreCase = true) ||
-                    versionLine.contains("5.10.404R", ignoreCase = true)) {
+                    versionLine.contains("5.10.404R", ignoreCase = true) ||
+                    versionLine.contains("Kalopsia", ignoreCase = true)) {
                     return true
                 }
 
