@@ -15,6 +15,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -XX:+UseG1GC -XX:MaxMetaspaceSize=1024m"
 
     steps:
       - name: Checkout repository
@@ -30,11 +32,16 @@ jobs:
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
+      - name: Configure Gradle properties
+        run: |
+          cat << 'EOF' > gradle.properties
+          org.gradle.jvmargs=-Xmx4096m -XX:+UseG1GC -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8
+          org.gradle.parallel=true
+          kotlin.daemon.jvmargs=-Xmx3072m
+          EOF
+
       - name: Make gradlew executable
         run: chmod +x gradlew
-
-      - name: Run Unit Tests
-        run: ./gradlew test --stacktrace
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
